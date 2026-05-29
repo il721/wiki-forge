@@ -1,0 +1,23 @@
+[project]
+name = "wiki-forge"
+version = "0.1.0"
+description = "Desktop cockpit for managing LLM Wiki vaults"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.6",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-qt>=4.4"]
+
+[project.scripts]
+wiki-forge = "cockpit.app:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+qt_api = "pyside6"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
