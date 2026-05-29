@@ -2,11 +2,13 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: NOT STARTED — ready to begin Task 1
+## Status: IN PROGRESS — Task 1 done, next is Task 2
+
+> **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
 | # | Task | State |
 |---|------|-------|
-| 1 | Project scaffold + pytest harness | ⬜ todo |
+| 1 | Project scaffold + pytest harness | ✅ done (`1ee7eed`) |
 | 2 | `config.py` (config_dir + JsonStore) | ⬜ todo |
 | 3 | `vault.py` (Vault + VaultManager) | ⬜ todo |
 | 4 | `jobs.py` (JobRunner) | ⬜ todo |
@@ -21,14 +23,16 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 1**: create `pyproject.toml`, package markers, `tests/test_smoke.py`,
-then `pip install -e ".[dev]"` and `pytest tests/test_smoke.py -v`.
+Begin **Task 2** (`config.py`): TDD `config_dir()` + `JsonStore` per the plan.
+Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop the
+`wiki-forge/` path prefix from the plan (root IS the project).
 
 ## Environment notes
-- Python: use the environment's default `python` / `pip`.
-- venv: _not yet created_ (decide at Task 1; PySide6 is large).
-- `pip install -e ".[dev]"`: _not yet run_.
+- Python: environment default `python` / `pip` (no venv; using global site-packages).
+- `pip install -e ".[dev]"`: DONE. PySide6 6.11.1 already present; installed
+  pytest 9.0.3, pytest-qt 4.5.0.
 - Ollama: only needed for the final manual smoke test (Task 13).
 
 ## Log
-- _(empty — first task not yet done)_
+- Task 1 (`1ee7eed`): scaffolded pyproject.toml, cockpit/ + cockpit/llm/ + tests/
+  package markers, tests/test_smoke.py. `pytest` 1 passed. Verified independently.
