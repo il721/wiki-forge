@@ -431,7 +431,7 @@ git commit -m "feat: add Vault model and VaultManager registry"
 - Create: `wiki-forge/cockpit/jobs.py`
 - Test: `wiki-forge/tests/test_jobs.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_jobs.py`:
 ```python
@@ -466,12 +466,12 @@ def test_job_error_goes_to_on_error(qtbot):
     qtbot.waitUntil(lambda: errors and "nope" in errors[0], timeout=2000)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_jobs.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.jobs'`.
 
-- [ ] **Step 3: Implement `jobs.py`**
+- [x] **Step 3: Implement `jobs.py`**
 
 ```python
 """Run callables off the UI thread and deliver results back via signals."""
@@ -515,12 +515,12 @@ class JobRunner:
         return worker
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_jobs.py -v`
 Expected: 3 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/jobs.py wiki-forge/tests/test_jobs.py
