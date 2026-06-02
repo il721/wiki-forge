@@ -1593,7 +1593,7 @@ git commit -m "feat: add Dashboard and LLM Settings core plugins"
 - Modify: `wiki-forge/tests/test_app_smoke.py` (tighten assertion now that all 3 plugins exist)
 - Test: `wiki-forge/tests/test_ingest_logic.py`
 
-- [ ] **Step 1: Write the failing logic test (note builder)**
+- [x] **Step 1: Write the failing logic test (note builder)**
 
 `tests/test_ingest_logic.py`:
 ```python
@@ -1614,12 +1614,12 @@ def test_build_wiki_note_has_frontmatter_and_source_link():
     assert "A compiled concept body." in note
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_ingest_logic.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'plugins.core.ingest'`.
 
-- [ ] **Step 3: Implement `plugins/core/ingest.py`**
+- [x] **Step 3: Implement `plugins/core/ingest.py`**
 
 ```python
 """Ingest & Compile plugin: raw sources -> LLM-drafted Wiki notes (reviewed)."""
@@ -1759,7 +1759,7 @@ class IngestPlugin(Plugin):
                                on_done=self.ctx.log)
 ```
 
-- [ ] **Step 4: Tighten the app smoke test**
+- [x] **Step 4: Tighten the app smoke test**
 
 Replace the body of `tests/test_app_smoke.py` with the full three-plugin assertion:
 ```python
@@ -1777,7 +1777,7 @@ def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
     assert "LLM Settings" in labels
 ```
 
-- [ ] **Step 5: Run the full suite and commit**
+- [x] **Step 5: Run the full suite and commit**
 
 Run: `pytest -v`
 Expected: all tests pass (config, vault, jobs, wiki_tool_service, ollama, plugin_context, plugin_host, backup, dashboard_logic, ingest_logic, app_smoke).

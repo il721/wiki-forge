@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-11 done, next is Task 12
+## Status: IN PROGRESS — Tasks 1-12 done, next is Task 13 (final)
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -19,21 +19,21 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 9 | `backup.py` (settings backup/restore) | ✅ done (`b212049`) |
 | 10 | `app.py` (MainWindow shell) | ✅ done (`d154074`) |
 | 11 | Dashboard + LLM Settings plugins | ✅ done (`1eb81ab`) |
-| 12 | Ingest & Compile plugin | ⬜ todo |
+| 12 | Ingest & Compile plugin | ✅ done (`cd9f5eb` + fix `6050b1d`) |
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 12** (core plugin `plugins/core/ingest.py` — Ingest & Compile). TDD starts
-with a PURE logic test `tests/test_ingest_logic.py` for `build_wiki_note(body, source_rel,
-tag, today)` (returns a note string with schema-correct YAML frontmatter: tags, sources,
-source_count: 1, then the body). Then implement `IngestPlugin` (Qt: raw-source list →
-LLM compile draft → review → save to Wiki + manifest; uses `vault.raw_sources`,
-`ctx.llm`, `ctx.run_job`). FINALLY, **Task 12 Step 4 tightens `tests/test_app_smoke.py`**:
-replace `test_mainwindow_constructs` with the fuller `test_mainwindow_loads_core_plugins`
-asserting "Dashboard", "Ingest", "LLM Settings" are all tab labels (now that all three
-core plugins exist). See plan Task 12 (lines ~1589+). Working dir `F:\____IL_AI\wiki-forge`,
-branch `build/wiki-forge`. Drop the `wiki-forge/` path prefix (root IS the project).
-After Task 12 only **Task 13** remains (README + manual Ollama smoke test — needs the user).
+Begin **Task 13** (final): create `README.md` (install / run / writing-a-plugin / tests —
+plan Task 13 Step 1 has the content) and commit it. Then **Step 2 is a MANUAL smoke
+checklist** that needs the USER: a real LLM Wiki vault + a running Ollama (launch
+`wiki-forge`, add vault, run maintenance gate, check/refresh models, compile+save a note,
+backup/restore). The automated build can finish the README commit, but the manual smoke
+run must be done by the user. After that, the branch `build/wiki-forge` is feature-complete
+— use superpowers:finishing-a-development-branch to decide merge/PR. See plan Task 13
+(lines ~1792+). Working dir `F:\____IL_AI\wiki-forge`. Drop the `wiki-forge/` path prefix.
+KNOWN: an interim README already exists (commit `bf3efdf`) describing build state — Task 13
+should reconcile/replace it with the plan's user-facing README rather than blindly add a
+second one.
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -106,3 +106,18 @@ After Task 12 only **Task 13** remains (README + manual Ollama smoke test — ne
   in run_job too if it ever bites. Minor notes: `chat_model` setting is defaulted but never
   written by _save (no form row yet); _single discards the exit code (no status flag on a
   single failed action). All in-scope-minimal per the plan.
+- Task 12 (`cd9f5eb`, + fix `6050b1d`): plugins/core/ingest.py (pure `build_wiki_note` —
+  schema-correct YAML frontmatter + body — and IngestPlugin: two-pane tab, raw-source list,
+  LLM compile draft, review, save-to-Wiki + `source-scan --update --accept-covered`) +
+  tests/test_ingest_logic.py (1 test) + tightened tests/test_app_smoke.py to assert all 3
+  core-plugin tabs (Dashboard/Ingest/LLM Settings) load. TDD; full suite 30 passed. Matches
+  plan verbatim. Two-stage review passed. The code-quality review caught a REAL runtime bug
+  in the plan's verbatim _save: it wrote to `Wiki/<tag-folder>/` without creating it, and
+  `Vault.is_valid()` only guarantees `Wiki/` exists — so the first save to a tag folder on a
+  fresh vault raised FileNotFoundError. Fixed in `6050b1d` with a one-line
+  `dest_dir.mkdir(parents=True, exist_ok=True)` (justified deviation from plan; the manual
+  smoke test in Task 13 exercises exactly this path). The mkdir is covered only by the smoke
+  path, not a dedicated unit test (Qt _save is not unit-tested, consistent with project
+  altitude). Other reviewer notes (non-blocking, verbatim plan): _compile runs ollama
+  health() synchronously on the UI thread (same as Task 11); no guard against saving the
+  "Compiling…" placeholder; _reload_sources is top-level glob only.
