@@ -126,3 +126,9 @@ branch `build/wiki-forge` is feature-complete → use
   than duplicated: kept the richer Architecture + plugin sections from the interim version,
   dropped the under-construction warning and the stale status table. Step 2 (manual smoke
   run) is left UNCHECKED in the plan — it's a user action requiring a real vault + Ollama.
+- Post-build enhancement — Modern Dark theme (`833fd48`, spec `05fc75b`): visual-only restyle
+  per the user's DESIGN.md. New `cockpit/theme.py` (centralized QSS + bundled Lexend-Light.ttf
+  under cockpit/assets/fonts/, SIL OFL) applied once in `app.main()` via `apply_theme(app)`;
+  one-line wiring in app.py, no structural change. tests/test_theme.py (3 tests). Full suite
+  33 passed. Adapted DESIGN.md font sizes down for the dense cockpit; icons deferred. Spec:
+  docs/superpowers/specs/2026-06-02-wiki-forge-dark-theme-design.md.
