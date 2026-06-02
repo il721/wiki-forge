@@ -634,7 +634,7 @@ git commit -m "feat: add WikiToolService subprocess wrapper"
 - Create: `wiki-forge/cockpit/llm/ollama.py`
 - Test: `wiki-forge/tests/test_ollama.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_ollama.py`:
 ```python
@@ -692,12 +692,12 @@ def test_generate_returns_response_field(monkeypatch):
     assert captured["json"]["stream"] is False
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_ollama.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.llm.ollama'`.
 
-- [ ] **Step 3: Implement `llm/base.py`**
+- [x] **Step 3: Implement `llm/base.py`**
 
 ```python
 """The provider contract every LLM backend implements."""
@@ -718,7 +718,7 @@ class LLMProvider(ABC):
         """Return the model's completion for prompt."""
 ```
 
-- [ ] **Step 4: Implement `llm/ollama.py`**
+- [x] **Step 4: Implement `llm/ollama.py`**
 
 ```python
 """Ollama implementation of LLMProvider (http://localhost:11434)."""
@@ -752,7 +752,7 @@ class OllamaProvider(LLMProvider):
         return r.json().get("response", "")
 ```
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 Run: `pytest tests/test_ollama.py -v`
 Expected: 4 passed.

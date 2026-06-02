@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-5 done, next is Task 6
+## Status: IN PROGRESS — Tasks 1-6 done, next is Task 7
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -13,7 +13,7 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 3 | `vault.py` (Vault + VaultManager) | ✅ done (`4305649`) |
 | 4 | `jobs.py` (JobRunner) | ✅ done (`4ce19d9`) |
 | 5 | `wiki_tool_service.py` (subprocess wrapper) | ✅ done (`112b05a`) |
-| 6 | `llm/` (provider contract + Ollama) | ⬜ todo |
+| 6 | `llm/` (provider contract + Ollama) | ✅ done (`4b7761d`) |
 | 7 | `plugin.py` (Plugin + PluginContext) | ⬜ todo |
 | 8 | `plugin_host.py` (discovery + isolation) | ⬜ todo |
 | 9 | `backup.py` (settings backup/restore) | ⬜ todo |
@@ -23,11 +23,12 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 6** (`llm/base.py` + `llm/ollama.py`): TDD the `LLMProvider` ABC and the
-`OllamaProvider` (health/list_models/generate against http://localhost:11434). Tests
-monkeypatch `cockpit.llm.ollama.requests` — no live Ollama needed. See plan Task 6.
-Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop the
-`wiki-forge/` path prefix from the plan (root IS the project).
+Begin **Task 7** (`plugin.py`): TDD the public plugin contract — `Plugin` base class,
+`PluginContext` (active_vault, on_vault_changed, run_job, add_tab/toolbar/card, log),
+and `_WikiToolBinding` (binds WikiToolService to the active vault). Test file is
+`tests/test_plugin_context.py` and uses the `vault` fixture + a `_FakeUi`. See plan
+Task 7. Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop
+the `wiki-forge/` path prefix from the plan (root IS the project).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -52,3 +53,6 @@ Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop
 - Task 5 (`112b05a`): cockpit/wiki_tool_service.py (WikiToolService: run_sync /
   run_script_sync / async run via JobRunner) + tests/test_wiki_tool_service.py. TDD;
   full suite 15 passed. Matches plan verbatim (test uses `bool(out)` per convention).
+- Task 6 (`4b7761d`): cockpit/llm/base.py (LLMProvider ABC) + cockpit/llm/ollama.py
+  (OllamaProvider: health/list_models/generate) + tests/test_ollama.py. TDD; full suite
+  19 passed. Matches plan verbatim; tests monkeypatch requests (no live Ollama).
