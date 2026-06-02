@@ -431,7 +431,7 @@ git commit -m "feat: add Vault model and VaultManager registry"
 - Create: `wiki-forge/cockpit/jobs.py`
 - Test: `wiki-forge/tests/test_jobs.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_jobs.py`:
 ```python
@@ -466,12 +466,12 @@ def test_job_error_goes_to_on_error(qtbot):
     qtbot.waitUntil(lambda: errors and "nope" in errors[0], timeout=2000)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_jobs.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.jobs'`.
 
-- [ ] **Step 3: Implement `jobs.py`**
+- [x] **Step 3: Implement `jobs.py`**
 
 ```python
 """Run callables off the UI thread and deliver results back via signals."""
@@ -515,12 +515,12 @@ class JobRunner:
         return worker
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_jobs.py -v`
 Expected: 3 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/jobs.py wiki-forge/tests/test_jobs.py
@@ -535,7 +535,7 @@ git commit -m "feat: add JobRunner for off-thread work"
 - Create: `wiki-forge/cockpit/wiki_tool_service.py`
 - Test: `wiki-forge/tests/test_wiki_tool_service.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_wiki_tool_service.py`:
 ```python
@@ -572,12 +572,12 @@ def test_run_async_delivers_text(vault, qtbot):
     qtbot.waitUntil(lambda: out and "STUB doctor" in out[0], timeout=2000)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_wiki_tool_service.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.wiki_tool_service'`.
 
-- [ ] **Step 3: Implement `wiki_tool_service.py`**
+- [x] **Step 3: Implement `wiki_tool_service.py`**
 
 ```python
 """Invoke a vault's own scripts as subprocesses and capture their output."""
@@ -613,12 +613,12 @@ class WikiToolService:
         self.jobs.submit(work, on_done=on_done, on_error=on_error)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_wiki_tool_service.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/wiki_tool_service.py wiki-forge/tests/test_wiki_tool_service.py
@@ -634,7 +634,7 @@ git commit -m "feat: add WikiToolService subprocess wrapper"
 - Create: `wiki-forge/cockpit/llm/ollama.py`
 - Test: `wiki-forge/tests/test_ollama.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_ollama.py`:
 ```python
@@ -692,12 +692,12 @@ def test_generate_returns_response_field(monkeypatch):
     assert captured["json"]["stream"] is False
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_ollama.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.llm.ollama'`.
 
-- [ ] **Step 3: Implement `llm/base.py`**
+- [x] **Step 3: Implement `llm/base.py`**
 
 ```python
 """The provider contract every LLM backend implements."""
@@ -718,7 +718,7 @@ class LLMProvider(ABC):
         """Return the model's completion for prompt."""
 ```
 
-- [ ] **Step 4: Implement `llm/ollama.py`**
+- [x] **Step 4: Implement `llm/ollama.py`**
 
 ```python
 """Ollama implementation of LLMProvider (http://localhost:11434)."""
@@ -752,7 +752,7 @@ class OllamaProvider(LLMProvider):
         return r.json().get("response", "")
 ```
 
-- [ ] **Step 5: Run tests and commit**
+- [x] **Step 5: Run tests and commit**
 
 Run: `pytest tests/test_ollama.py -v`
 Expected: 4 passed.
@@ -770,7 +770,7 @@ git commit -m "feat: add LLMProvider contract and OllamaProvider"
 - Test: covered by Task 8 (plugin host). This task adds a focused context test below.
 - Test: `wiki-forge/tests/test_plugin_context.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_plugin_context.py`:
 ```python
@@ -832,12 +832,12 @@ def test_add_tab_reaches_ui(vault, tmp_path):
     assert ui.tabs == [("test.plugin", sentinel)]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_plugin_context.py -v`
 Expected: FAIL with `ImportError` (no `PluginContext` in `cockpit.plugin`).
 
-- [ ] **Step 3: Implement `plugin.py`**
+- [x] **Step 3: Implement `plugin.py`**
 
 ```python
 """The public plugin contract: the base class and the context object.
@@ -916,12 +916,12 @@ class PluginContext:
         self._log(msg)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_plugin_context.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/plugin.py wiki-forge/tests/test_plugin_context.py
@@ -936,7 +936,7 @@ git commit -m "feat: add Plugin base class and PluginContext API"
 - Create: `wiki-forge/cockpit/plugin_host.py`
 - Test: `wiki-forge/tests/test_plugin_host.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_plugin_host.py`:
 ```python
@@ -988,12 +988,12 @@ def test_ignores_underscore_files(tmp_path):
     assert host.loaded == []
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_plugin_host.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.plugin_host'`.
 
-- [ ] **Step 3: Implement `plugin_host.py`**
+- [x] **Step 3: Implement `plugin_host.py`**
 
 ```python
 """Discover plugin files, instantiate them, and isolate failures."""
@@ -1050,12 +1050,12 @@ class PluginHost:
         return self.loaded
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_plugin_host.py -v`
 Expected: 2 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/plugin_host.py wiki-forge/tests/test_plugin_host.py
@@ -1070,7 +1070,7 @@ git commit -m "feat: add PluginHost with discovery and failure isolation"
 - Create: `wiki-forge/cockpit/backup.py`
 - Test: `wiki-forge/tests/test_backup.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_backup.py`:
 ```python
@@ -1095,12 +1095,12 @@ def test_backup_then_restore_roundtrip(tmp_path):
     assert (target / "plugins" / "extra.py").exists()
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_backup.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.backup'`.
 
-- [ ] **Step 3: Implement `backup.py`**
+- [x] **Step 3: Implement `backup.py`**
 
 ```python
 """Zip the whole config dir for backup, and unzip to restore."""
@@ -1125,12 +1125,12 @@ def restore_settings(src_zip, config_dir) -> None:
         zf.extractall(config_dir)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_backup.py -v`
 Expected: 1 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/backup.py wiki-forge/tests/test_backup.py
@@ -1147,7 +1147,7 @@ git commit -m "feat: add settings backup/restore"
 
 This wires services + UI host + PluginHost into a MainWindow. The `_UiHost` adapts plugin mount calls to Qt widgets. Per-plugin settings are namespaced inside `settings.json` under `plugins.<id>` and saved on close.
 
-- [ ] **Step 1: Write the failing smoke test**
+- [x] **Step 1: Write the failing smoke test**
 
 `tests/test_app_smoke.py`:
 ```python
@@ -1168,12 +1168,12 @@ def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
     assert "LLM Settings" in labels
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_app_smoke.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.app'`.
 
-- [ ] **Step 3: Implement `app.py`**
+- [x] **Step 3: Implement `app.py`**
 
 ```python
 """Wiki-Forge main window: wires services and mounts plugins."""
@@ -1380,12 +1380,12 @@ def test_mainwindow_constructs(qtbot, tmp_path, monkeypatch):
     assert win.tabs is not None
 ```
 
-- [ ] **Step 4: Run the simpler smoke test**
+- [x] **Step 4: Run the simpler smoke test**
 
 Run: `pytest tests/test_app_smoke.py -v`
 Expected: 1 passed (no core plugins yet; `tabs` exists).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/app.py wiki-forge/tests/test_app_smoke.py
@@ -1401,7 +1401,7 @@ git commit -m "feat: add MainWindow shell with vault switcher, plugin host, back
 - Create: `wiki-forge/plugins/core/llm_settings.py`
 - Test: `wiki-forge/tests/test_dashboard_logic.py`
 
-- [ ] **Step 1: Write the failing logic test (gate sequencing helper)**
+- [x] **Step 1: Write the failing logic test (gate sequencing helper)**
 
 `tests/test_dashboard_logic.py`:
 ```python
@@ -1432,14 +1432,14 @@ def test_gate_runs_all_when_passing():
     assert "FAILED" not in log
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_dashboard_logic.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'plugins.core.dashboard'`.
 
 > If import fails on `plugins` not being a package, add empty `wiki-forge/plugins/__init__.py` and `wiki-forge/plugins/core/__init__.py`. Create them now.
 
-- [ ] **Step 3: Implement `plugins/core/dashboard.py`**
+- [x] **Step 3: Implement `plugins/core/dashboard.py`**
 
 ```python
 """Dashboard plugin: health, counts, coverage, and the maintenance gate."""
@@ -1504,7 +1504,7 @@ class DashboardPlugin(Plugin):
         )
 ```
 
-- [ ] **Step 4: Implement `plugins/core/llm_settings.py`**
+- [x] **Step 4: Implement `plugins/core/llm_settings.py`**
 
 ```python
 """LLM Settings plugin: Ollama endpoint, model selection, health check."""
@@ -1573,7 +1573,7 @@ class LlmSettingsPlugin(Plugin):
         self.ctx.log("LLM settings saved.")
 ```
 
-- [ ] **Step 5: Run logic test and commit**
+- [x] **Step 5: Run logic test and commit**
 
 Run: `pytest tests/test_dashboard_logic.py -v`
 Expected: 2 passed.
@@ -1593,7 +1593,7 @@ git commit -m "feat: add Dashboard and LLM Settings core plugins"
 - Modify: `wiki-forge/tests/test_app_smoke.py` (tighten assertion now that all 3 plugins exist)
 - Test: `wiki-forge/tests/test_ingest_logic.py`
 
-- [ ] **Step 1: Write the failing logic test (note builder)**
+- [x] **Step 1: Write the failing logic test (note builder)**
 
 `tests/test_ingest_logic.py`:
 ```python
@@ -1614,12 +1614,12 @@ def test_build_wiki_note_has_frontmatter_and_source_link():
     assert "A compiled concept body." in note
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_ingest_logic.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'plugins.core.ingest'`.
 
-- [ ] **Step 3: Implement `plugins/core/ingest.py`**
+- [x] **Step 3: Implement `plugins/core/ingest.py`**
 
 ```python
 """Ingest & Compile plugin: raw sources -> LLM-drafted Wiki notes (reviewed)."""
@@ -1759,7 +1759,7 @@ class IngestPlugin(Plugin):
                                on_done=self.ctx.log)
 ```
 
-- [ ] **Step 4: Tighten the app smoke test**
+- [x] **Step 4: Tighten the app smoke test**
 
 Replace the body of `tests/test_app_smoke.py` with the full three-plugin assertion:
 ```python
@@ -1777,7 +1777,7 @@ def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
     assert "LLM Settings" in labels
 ```
 
-- [ ] **Step 5: Run the full suite and commit**
+- [x] **Step 5: Run the full suite and commit**
 
 Run: `pytest -v`
 Expected: all tests pass (config, vault, jobs, wiki_tool_service, ollama, plugin_context, plugin_host, backup, dashboard_logic, ingest_logic, app_smoke).
@@ -1794,7 +1794,7 @@ git commit -m "feat: add Ingest & Compile core plugin; full plugin set loads"
 **Files:**
 - Create: `wiki-forge/README.md`
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`** _(reconciled with the pre-existing interim README; kept the richer Architecture/plugin sections, added Install/Run/features/smoke-checklist, dropped the under-construction framing)_
 
 ```markdown
 # Wiki-Forge
@@ -1825,7 +1825,7 @@ pytest -v
 ```
 ```
 
-- [ ] **Step 2: Manual smoke checklist (run once with a real vault + Ollama)**
+- [ ] **Step 2: Manual smoke checklist (run once with a real vault + Ollama)** _(USER ACTION — requires a running app, a real LLM Wiki vault, and a live Ollama; cannot be done by the automated build)_
 
 - [ ] Launch `wiki-forge`; window opens with Dashboard/Ingest/LLM Settings tabs.
 - [ ] **+ Add vault** → pick the existing LLM Wiki folder (e.g. `F:\____IL_AI\VectorDB`); it appears in the dropdown.
@@ -1834,7 +1834,7 @@ pytest -v
 - [ ] Ingest → select a Raw source → **Compile with LLM** → a draft appears → **Save** writes a note under `Wiki/` and refreshes the manifest.
 - [ ] File → **Backup settings** writes a zip; **Restore settings** reads it back.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit** _(committed as `2f8053d`)_
 
 ```bash
 git add wiki-forge/README.md

@@ -1,0 +1,1 @@
+"""Wiki-Forge cockpit package."""
