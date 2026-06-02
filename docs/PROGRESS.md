@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-12 done, next is Task 13 (final)
+## Status: CODE-COMPLETE — Tasks 1-13 built; only the Task 13 manual smoke run (user) remains
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -20,20 +20,18 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 10 | `app.py` (MainWindow shell) | ✅ done (`d154074`) |
 | 11 | Dashboard + LLM Settings plugins | ✅ done (`1eb81ab`) |
 | 12 | Ingest & Compile plugin | ✅ done (`cd9f5eb` + fix `6050b1d`) |
-| 13 | README + manual smoke checklist | ⬜ todo |
+| 13 | README + manual smoke checklist | ✅ README done (`2f8053d`); ⬜ manual smoke = user |
 
 ## Next action
-Begin **Task 13** (final): create `README.md` (install / run / writing-a-plugin / tests —
-plan Task 13 Step 1 has the content) and commit it. Then **Step 2 is a MANUAL smoke
-checklist** that needs the USER: a real LLM Wiki vault + a running Ollama (launch
-`wiki-forge`, add vault, run maintenance gate, check/refresh models, compile+save a note,
-backup/restore). The automated build can finish the README commit, but the manual smoke
-run must be done by the user. After that, the branch `build/wiki-forge` is feature-complete
-— use superpowers:finishing-a-development-branch to decide merge/PR. See plan Task 13
-(lines ~1792+). Working dir `F:\____IL_AI\wiki-forge`. Drop the `wiki-forge/` path prefix.
-KNOWN: an interim README already exists (commit `bf3efdf`) describing build state — Task 13
-should reconcile/replace it with the plan's user-facing README rather than blindly add a
-second one.
+All 13 tasks are BUILT. The only thing left in the plan is **Task 13 Step 2 — the manual
+smoke checklist — which is a USER action** (needs a running app, a real LLM Wiki vault,
+and a live Ollama): launch `wiki-forge`, add a vault, run the maintenance gate,
+check/refresh models, compile+save a note, backup/restore. The checklist lives in
+`README.md` (and plan Task 13 Step 2). Once the user has run it and is satisfied, the
+branch `build/wiki-forge` is feature-complete → use
+**superpowers:finishing-a-development-branch** to decide merge vs PR vs cleanup
+(currently unmerged on `build/wiki-forge`; main is `main`). Working dir
+`F:\____IL_AI\wiki-forge`.
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -121,3 +119,10 @@ second one.
   altitude). Other reviewer notes (non-blocking, verbatim plan): _compile runs ollama
   health() synchronously on the UI thread (same as Task 11); no guard against saving the
   "Compiling…" placeholder; _reload_sources is top-level glob only.
+- Task 13 (`2f8053d`): replaced the interim README (`bf3efdf`) with the finished
+  user-facing README.md — Install / Run (`wiki-forge` console script or `python -m
+  cockpit.app`, both verified to exist in pyproject + app.main) / What-it-does / Tests /
+  Architecture / Writing-a-plugin / Manual-smoke-test / Documentation. Reconciled rather
+  than duplicated: kept the richer Architecture + plugin sections from the interim version,
+  dropped the under-construction warning and the stale status table. Step 2 (manual smoke
+  run) is left UNCHECKED in the plan — it's a user action requiring a real vault + Ollama.

@@ -1794,7 +1794,7 @@ git commit -m "feat: add Ingest & Compile core plugin; full plugin set loads"
 **Files:**
 - Create: `wiki-forge/README.md`
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`** _(reconciled with the pre-existing interim README; kept the richer Architecture/plugin sections, added Install/Run/features/smoke-checklist, dropped the under-construction framing)_
 
 ```markdown
 # Wiki-Forge
@@ -1825,7 +1825,7 @@ pytest -v
 ```
 ```
 
-- [ ] **Step 2: Manual smoke checklist (run once with a real vault + Ollama)**
+- [ ] **Step 2: Manual smoke checklist (run once with a real vault + Ollama)** _(USER ACTION — requires a running app, a real LLM Wiki vault, and a live Ollama; cannot be done by the automated build)_
 
 - [ ] Launch `wiki-forge`; window opens with Dashboard/Ingest/LLM Settings tabs.
 - [ ] **+ Add vault** → pick the existing LLM Wiki folder (e.g. `F:\____IL_AI\VectorDB`); it appears in the dropdown.
@@ -1834,7 +1834,7 @@ pytest -v
 - [ ] Ingest → select a Raw source → **Compile with LLM** → a draft appears → **Save** writes a note under `Wiki/` and refreshes the manifest.
 - [ ] File → **Backup settings** writes a zip; **Restore settings** reads it back.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit** _(committed as `2f8053d`)_
 
 ```bash
 git add wiki-forge/README.md
