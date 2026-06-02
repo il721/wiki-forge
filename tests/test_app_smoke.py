@@ -1,9 +1,12 @@
 from cockpit.app import MainWindow
-import cockpit.app as app_mod
 
 
-def test_mainwindow_constructs(qtbot, tmp_path, monkeypatch):
+def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
+    import cockpit.app as app_mod
     monkeypatch.setattr(app_mod, "config_dir", lambda: tmp_path)
     win = MainWindow()
     qtbot.addWidget(win)
-    assert win.tabs is not None
+    labels = [win.tabs.tabText(i) for i in range(win.tabs.count())]
+    assert "Dashboard" in labels
+    assert "Ingest" in labels
+    assert "LLM Settings" in labels
