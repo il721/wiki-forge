@@ -936,7 +936,7 @@ git commit -m "feat: add Plugin base class and PluginContext API"
 - Create: `wiki-forge/cockpit/plugin_host.py`
 - Test: `wiki-forge/tests/test_plugin_host.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_plugin_host.py`:
 ```python
@@ -988,12 +988,12 @@ def test_ignores_underscore_files(tmp_path):
     assert host.loaded == []
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_plugin_host.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.plugin_host'`.
 
-- [ ] **Step 3: Implement `plugin_host.py`**
+- [x] **Step 3: Implement `plugin_host.py`**
 
 ```python
 """Discover plugin files, instantiate them, and isolate failures."""
@@ -1050,12 +1050,12 @@ class PluginHost:
         return self.loaded
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_plugin_host.py -v`
 Expected: 2 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/plugin_host.py wiki-forge/tests/test_plugin_host.py

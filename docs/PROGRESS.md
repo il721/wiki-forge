@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-7 done, next is Task 8
+## Status: IN PROGRESS — Tasks 1-8 done, next is Task 9
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -15,7 +15,7 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 5 | `wiki_tool_service.py` (subprocess wrapper) | ✅ done (`112b05a`) |
 | 6 | `llm/` (provider contract + Ollama) | ✅ done (`4b7761d`) |
 | 7 | `plugin.py` (Plugin + PluginContext) | ✅ done (`16ca671`) |
-| 8 | `plugin_host.py` (discovery + isolation) | ⬜ todo |
+| 8 | `plugin_host.py` (discovery + isolation) | ✅ done (`fbe53f4`) |
 | 9 | `backup.py` (settings backup/restore) | ⬜ todo |
 | 10 | `app.py` (MainWindow shell) | ⬜ todo |
 | 11 | Dashboard + LLM Settings plugins | ⬜ todo |
@@ -23,13 +23,12 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 8** (`plugin_host.py`): TDD plugin discovery + failure isolation — a
-`PluginHost` that loads `*_plugin.py` modules from a plugins dir, instantiates each
-`Plugin` subclass, calls `activate(ctx)`, and isolates failures so one bad plugin's
-exception is caught/logged without aborting the others. Test file is
-`tests/test_plugin_host.py` (see plan Task 8). Working dir `F:\____IL_AI\wiki-forge`,
-branch `build/wiki-forge`. Remember: drop the `wiki-forge/` path prefix from the plan
-(root IS the project).
+Begin **Task 9** (`backup.py`): TDD settings backup/restore — `backup_settings(config_dir,
+dest_zip)` zips the whole config dir (rglob files, posix relative paths) and
+`restore_settings(src_zip, config_dir)` unzips it. Test is `tests/test_backup.py`
+(roundtrip: settings.json value + plugins/extra.py survive). See plan Task 9. Working
+dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop the
+`wiki-forge/` path prefix from the plan (root IS the project).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -64,3 +63,8 @@ branch `build/wiki-forge`. Remember: drop the `wiki-forge/` path prefix from the
   wiki_tool.run that the plan's Task 7 code omits (uses on_done/on_error only) — that's
   a plan-level design decision, not an implementation gap; revisit if streaming output
   is needed by a later plugin task.
+- Task 8 (`fbe53f4`): cockpit/plugin_host.py (PluginHost: discover/load_all with
+  per-plugin failure isolation) + tests/test_plugin_host.py. TDD; full suite 25 passed.
+  Matches plan verbatim. Two-stage review both passed. Known minor coverage gap (carried
+  from plan): no test for an import-time explosion (only the `_`-prefix skip path is
+  tested) and no test for a missing plugin dir — both low-risk straightforward branches.
