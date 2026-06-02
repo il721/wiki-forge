@@ -18,6 +18,9 @@ _TEXT = "rgb(230, 230, 230)"
 _TEXT_DIM = "rgb(150, 150, 150)"
 _BTN = "rgba(60, 60, 60, 80)"
 _BTN_HOVER = "rgba(30, 30, 30, 180)"
+# Neutral borders (no blue outlines); accent stays for fills/highlights only.
+_BORDER = "rgb(64, 64, 64)"
+_BORDER_FOCUS = _TEXT_DIM
 
 STYLESHEET = f"""
 * {{
@@ -39,7 +42,7 @@ QLabel {{
 
 /* --- Tabs --------------------------------------------------------------- */
 QTabWidget::pane {{
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 15px;
     top: -1px;
     background-color: {_SURFACE};
@@ -56,7 +59,7 @@ QTabBar::tab {{
 }}
 QTabBar::tab:selected {{
     color: {_TEXT};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-bottom-color: {_SURFACE};
 }}
 QTabBar::tab:hover {{
@@ -67,7 +70,7 @@ QTabBar::tab:hover {{
 QPushButton {{
     color: {_TEXT};
     background-color: {_BTN};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 15px;
     padding: 6px 16px;
     font-size: 14pt;
@@ -88,13 +91,13 @@ QPushButton:disabled {{
 /* --- Inputs ------------------------------------------------------------- */
 QLineEdit, QComboBox, QDoubleSpinBox, QSpinBox {{
     background-color: {_SURFACE};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 15px;
     padding: 5px 10px;
     font-size: 14pt;
 }}
 QLineEdit:focus, QComboBox:focus, QDoubleSpinBox:focus, QSpinBox:focus {{
-    border: 3px solid {_ACCENT};
+    border: 2px solid {_BORDER_FOCUS};
 }}
 QComboBox::drop-down {{
     border: none;
@@ -102,7 +105,7 @@ QComboBox::drop-down {{
 }}
 QComboBox QAbstractItemView {{
     background-color: {_SURFACE};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 10px;
     selection-background-color: {_ACCENT};
     selection-color: {_TEXT};
@@ -112,7 +115,7 @@ QComboBox QAbstractItemView {{
 /* --- Text + list panes -------------------------------------------------- */
 QPlainTextEdit, QTextEdit, QListWidget {{
     background-color: {_SURFACE};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 15px;
     padding: 6px;
     font-size: 13pt;
@@ -139,7 +142,7 @@ QToolBar {{
 QToolBar QToolButton {{
     color: {_TEXT};
     background-color: {_BTN};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 15px;
     padding: 6px 14px;
     font-size: 13pt;
@@ -164,7 +167,7 @@ QMenuBar::item:selected {{
 }}
 QMenu {{
     background-color: {_SURFACE};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 10px;
 }}
 QMenu::item {{
@@ -181,7 +184,7 @@ QDockWidget {{
 }}
 QDockWidget::title {{
     background-color: {_SURFACE};
-    border: 2px solid {_ACCENT};
+    border: 2px solid {_BORDER};
     border-radius: 10px;
     padding: 5px;
 }}
@@ -195,7 +198,7 @@ QScrollBar:vertical, QScrollBar:horizontal {{
 }}
 QScrollBar::handle {{
     background: {_BTN};
-    border: 1px solid {_ACCENT};
+    border: 1px solid {_BORDER};
     border-radius: 6px;
     min-height: 24px;
     min-width: 24px;
