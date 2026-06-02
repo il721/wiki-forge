@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-6 done, next is Task 7
+## Status: IN PROGRESS — Tasks 1-7 done, next is Task 8
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -14,7 +14,7 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 4 | `jobs.py` (JobRunner) | ✅ done (`4ce19d9`) |
 | 5 | `wiki_tool_service.py` (subprocess wrapper) | ✅ done (`112b05a`) |
 | 6 | `llm/` (provider contract + Ollama) | ✅ done (`4b7761d`) |
-| 7 | `plugin.py` (Plugin + PluginContext) | ⬜ todo |
+| 7 | `plugin.py` (Plugin + PluginContext) | ✅ done (`16ca671`) |
 | 8 | `plugin_host.py` (discovery + isolation) | ⬜ todo |
 | 9 | `backup.py` (settings backup/restore) | ⬜ todo |
 | 10 | `app.py` (MainWindow shell) | ⬜ todo |
@@ -23,12 +23,13 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 7** (`plugin.py`): TDD the public plugin contract — `Plugin` base class,
-`PluginContext` (active_vault, on_vault_changed, run_job, add_tab/toolbar/card, log),
-and `_WikiToolBinding` (binds WikiToolService to the active vault). Test file is
-`tests/test_plugin_context.py` and uses the `vault` fixture + a `_FakeUi`. See plan
-Task 7. Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop
-the `wiki-forge/` path prefix from the plan (root IS the project).
+Begin **Task 8** (`plugin_host.py`): TDD plugin discovery + failure isolation — a
+`PluginHost` that loads `*_plugin.py` modules from a plugins dir, instantiates each
+`Plugin` subclass, calls `activate(ctx)`, and isolates failures so one bad plugin's
+exception is caught/logged without aborting the others. Test file is
+`tests/test_plugin_host.py` (see plan Task 8). Working dir `F:\____IL_AI\wiki-forge`,
+branch `build/wiki-forge`. Remember: drop the `wiki-forge/` path prefix from the plan
+(root IS the project).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -56,3 +57,10 @@ the `wiki-forge/` path prefix from the plan (root IS the project).
 - Task 6 (`4b7761d`): cockpit/llm/base.py (LLMProvider ABC) + cockpit/llm/ollama.py
   (OllamaProvider: health/list_models/generate) + tests/test_ollama.py. TDD; full suite
   19 passed. Matches plan verbatim; tests monkeypatch requests (no live Ollama).
+- Task 7 (`16ca671`): cockpit/plugin.py (Plugin base class + _WikiToolBinding +
+  PluginContext DI surface) + tests/test_plugin_context.py. TDD; full suite 23 passed.
+  Matches plan verbatim. Two-stage review (spec compliance + code quality) both passed.
+  Reviewer note: the high-level spec mentions an `on_output=` callback on run_job /
+  wiki_tool.run that the plan's Task 7 code omits (uses on_done/on_error only) — that's
+  a plan-level design decision, not an implementation gap; revisit if streaming output
+  is needed by a later plugin task.

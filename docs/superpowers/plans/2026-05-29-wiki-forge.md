@@ -770,7 +770,7 @@ git commit -m "feat: add LLMProvider contract and OllamaProvider"
 - Test: covered by Task 8 (plugin host). This task adds a focused context test below.
 - Test: `wiki-forge/tests/test_plugin_context.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_plugin_context.py`:
 ```python
@@ -832,12 +832,12 @@ def test_add_tab_reaches_ui(vault, tmp_path):
     assert ui.tabs == [("test.plugin", sentinel)]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_plugin_context.py -v`
 Expected: FAIL with `ImportError` (no `PluginContext` in `cockpit.plugin`).
 
-- [ ] **Step 3: Implement `plugin.py`**
+- [x] **Step 3: Implement `plugin.py`**
 
 ```python
 """The public plugin contract: the base class and the context object.
@@ -916,12 +916,12 @@ class PluginContext:
         self._log(msg)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_plugin_context.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/plugin.py wiki-forge/tests/test_plugin_context.py
