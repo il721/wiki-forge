@@ -535,7 +535,7 @@ git commit -m "feat: add JobRunner for off-thread work"
 - Create: `wiki-forge/cockpit/wiki_tool_service.py`
 - Test: `wiki-forge/tests/test_wiki_tool_service.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_wiki_tool_service.py`:
 ```python
@@ -572,12 +572,12 @@ def test_run_async_delivers_text(vault, qtbot):
     qtbot.waitUntil(lambda: out and "STUB doctor" in out[0], timeout=2000)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_wiki_tool_service.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.wiki_tool_service'`.
 
-- [ ] **Step 3: Implement `wiki_tool_service.py`**
+- [x] **Step 3: Implement `wiki_tool_service.py`**
 
 ```python
 """Invoke a vault's own scripts as subprocesses and capture their output."""
@@ -613,12 +613,12 @@ class WikiToolService:
         self.jobs.submit(work, on_done=on_done, on_error=on_error)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_wiki_tool_service.py -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/wiki_tool_service.py wiki-forge/tests/test_wiki_tool_service.py
