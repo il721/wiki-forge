@@ -17,6 +17,7 @@ from cockpit.llm.ollama import OllamaProvider
 from cockpit.plugin import PluginContext
 from cockpit.plugin_host import PluginHost
 from cockpit.backup import backup_settings, restore_settings
+from cockpit.theme import apply_theme
 
 
 class _UiHost:
@@ -182,6 +183,7 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    apply_theme(app)
     win = MainWindow()
     win.show()
     sys.exit(app.exec())
