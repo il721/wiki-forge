@@ -1147,7 +1147,7 @@ git commit -m "feat: add settings backup/restore"
 
 This wires services + UI host + PluginHost into a MainWindow. The `_UiHost` adapts plugin mount calls to Qt widgets. Per-plugin settings are namespaced inside `settings.json` under `plugins.<id>` and saved on close.
 
-- [ ] **Step 1: Write the failing smoke test**
+- [x] **Step 1: Write the failing smoke test**
 
 `tests/test_app_smoke.py`:
 ```python
@@ -1168,12 +1168,12 @@ def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
     assert "LLM Settings" in labels
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_app_smoke.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.app'`.
 
-- [ ] **Step 3: Implement `app.py`**
+- [x] **Step 3: Implement `app.py`**
 
 ```python
 """Wiki-Forge main window: wires services and mounts plugins."""
@@ -1380,12 +1380,12 @@ def test_mainwindow_constructs(qtbot, tmp_path, monkeypatch):
     assert win.tabs is not None
 ```
 
-- [ ] **Step 4: Run the simpler smoke test**
+- [x] **Step 4: Run the simpler smoke test**
 
 Run: `pytest tests/test_app_smoke.py -v`
 Expected: 1 passed (no core plugins yet; `tabs` exists).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/app.py wiki-forge/tests/test_app_smoke.py

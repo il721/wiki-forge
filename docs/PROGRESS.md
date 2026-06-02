@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-9 done, next is Task 10
+## Status: IN PROGRESS — Tasks 1-10 done, next is Task 11
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -17,21 +17,24 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 7 | `plugin.py` (Plugin + PluginContext) | ✅ done (`16ca671`) |
 | 8 | `plugin_host.py` (discovery + isolation) | ✅ done (`fbe53f4`) |
 | 9 | `backup.py` (settings backup/restore) | ✅ done (`b212049`) |
-| 10 | `app.py` (MainWindow shell) | ⬜ todo |
+| 10 | `app.py` (MainWindow shell) | ✅ done (`d154074`) |
 | 11 | Dashboard + LLM Settings plugins | ⬜ todo |
 | 12 | Ingest & Compile plugin | ⬜ todo |
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 10** (`app.py`): wire services + UI host + PluginHost into a `MainWindow`
-shell (QTabWidget host, `_UiHost` adapting plugin mounts to Qt, per-plugin settings
-namespaced under `plugins.<id>` in settings.json, saved on close). Smoke test is
-`tests/test_app_smoke.py` — monkeypatch `cockpit.app.config_dir` to a tmp dir, assert
-the three core plugins (Dashboard / Ingest / LLM Settings) each add a tab. Needs
-pytest-qt's `qtbot`. See plan Task 10. Working dir `F:\____IL_AI\wiki-forge`, branch
-`build/wiki-forge`. Remember: drop the `wiki-forge/` path prefix from the plan (root IS
-the project). NOTE: the Task 10 smoke test references the three core plugins from
-Task 11 — confirm dependency ordering when starting (may need a minimal plugin stub).
+Begin **Task 11** (core plugins: `plugins/core/dashboard.py` + `plugins/core/llm_settings.py`):
+the Dashboard plugin (health/counts/coverage + maintenance gate) and the LLM Settings
+plugin. TDD starts with a PURE logic test `tests/test_dashboard_logic.py` for
+`run_gate_steps(steps, runner)` (runs steps in order, stops at first non-zero, log
+contains "FAILED"). NOTE: if `plugins` isn't importable as a package, create empty
+`plugins/__init__.py` and `plugins/core/__init__.py` first (plan Task 11 Step 2 note).
+The Qt plugin classes subclass `cockpit.plugin.Plugin` and mount via `ctx` (add_tab,
+add_toolbar_action, on_vault_changed, run_job, wiki_tool.run/run_sync). See plan Task 11.
+Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Drop the `wiki-forge/`
+path prefix (root IS the project). Once Task 11+12 add the three core plugins, tighten
+`tests/test_app_smoke.py` to assert the Dashboard/Ingest/LLM Settings tabs (plan Task 12
+Step 4).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -78,3 +81,16 @@ Task 11 — confirm dependency ordering when starting (may need a minimal plugin
   Reviewer notes (informational, in-scope-minimal): restore merges rather than clears the
   target dir, and no missing-zip / path-traversal hardening — revisit if a restore needs
   clean-slate semantics or untrusted archives are ever supported.
+- Task 10 (`d154074`): cockpit/app.py (MainWindow shell: wires config/JsonStore +
+  VaultManager + JobRunner + WikiToolService + OllamaProvider, a `_UiHost` adapter for
+  plugin mounts, vault-switcher combo, toolbar, log dock, File menu backup/restore/reload;
+  per-plugin settings under `plugins.<id>`, saved on close) + tests/test_app_smoke.py
+  (uses the SIMPLER `test_mainwindow_constructs` body per plan — asserts `win.tabs` exists;
+  the 3-core-plugin assertion is deferred to Task 12 since those plugins don't exist yet).
+  TDD; full suite 27 passed. Matches plan verbatim. Two-stage review both passed.
+  Reviewer notes (non-blocking, code is verbatim plan): (1) `config_dir()` is called a 2nd
+  time for the plugin dir instead of reusing the captured `cfg` — harmless redundancy;
+  (2) `_refresh_vault_combo` re-fires `set_active` on every refresh (incl. after adding a
+  vault), not only on init — fine now, but revisit if a later plugin's `on_vault_changed`
+  handler is expensive. Verified PluginHost.discover() skips the not-yet-existing
+  plugins/core dir, so the shell loads cleanly standalone.
