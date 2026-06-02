@@ -127,6 +127,7 @@ class IngestPlugin(Plugin):
         note = build_wiki_note(self.draft.toPlainText(), source_rel, tag,
                                date.today().isoformat())
         dest_dir = vault.wiki / FOLDER_FOR_TAG[tag]
+        dest_dir.mkdir(parents=True, exist_ok=True)
         dest = dest_dir / src.name
         dest.write_text(note, encoding="utf-8")
         self.ctx.log(f"Wrote {dest}")
