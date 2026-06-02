@@ -1070,7 +1070,7 @@ git commit -m "feat: add PluginHost with discovery and failure isolation"
 - Create: `wiki-forge/cockpit/backup.py`
 - Test: `wiki-forge/tests/test_backup.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 `tests/test_backup.py`:
 ```python
@@ -1095,12 +1095,12 @@ def test_backup_then_restore_roundtrip(tmp_path):
     assert (target / "plugins" / "extra.py").exists()
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_backup.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'cockpit.backup'`.
 
-- [ ] **Step 3: Implement `backup.py`**
+- [x] **Step 3: Implement `backup.py`**
 
 ```python
 """Zip the whole config dir for backup, and unzip to restore."""
@@ -1125,12 +1125,12 @@ def restore_settings(src_zip, config_dir) -> None:
         zf.extractall(config_dir)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/test_backup.py -v`
 Expected: 1 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add wiki-forge/cockpit/backup.py wiki-forge/tests/test_backup.py

@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-8 done, next is Task 9
+## Status: IN PROGRESS — Tasks 1-9 done, next is Task 10
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -16,19 +16,22 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 6 | `llm/` (provider contract + Ollama) | ✅ done (`4b7761d`) |
 | 7 | `plugin.py` (Plugin + PluginContext) | ✅ done (`16ca671`) |
 | 8 | `plugin_host.py` (discovery + isolation) | ✅ done (`fbe53f4`) |
-| 9 | `backup.py` (settings backup/restore) | ⬜ todo |
+| 9 | `backup.py` (settings backup/restore) | ✅ done (`b212049`) |
 | 10 | `app.py` (MainWindow shell) | ⬜ todo |
 | 11 | Dashboard + LLM Settings plugins | ⬜ todo |
 | 12 | Ingest & Compile plugin | ⬜ todo |
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 9** (`backup.py`): TDD settings backup/restore — `backup_settings(config_dir,
-dest_zip)` zips the whole config dir (rglob files, posix relative paths) and
-`restore_settings(src_zip, config_dir)` unzips it. Test is `tests/test_backup.py`
-(roundtrip: settings.json value + plugins/extra.py survive). See plan Task 9. Working
-dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop the
-`wiki-forge/` path prefix from the plan (root IS the project).
+Begin **Task 10** (`app.py`): wire services + UI host + PluginHost into a `MainWindow`
+shell (QTabWidget host, `_UiHost` adapting plugin mounts to Qt, per-plugin settings
+namespaced under `plugins.<id>` in settings.json, saved on close). Smoke test is
+`tests/test_app_smoke.py` — monkeypatch `cockpit.app.config_dir` to a tmp dir, assert
+the three core plugins (Dashboard / Ingest / LLM Settings) each add a tab. Needs
+pytest-qt's `qtbot`. See plan Task 10. Working dir `F:\____IL_AI\wiki-forge`, branch
+`build/wiki-forge`. Remember: drop the `wiki-forge/` path prefix from the plan (root IS
+the project). NOTE: the Task 10 smoke test references the three core plugins from
+Task 11 — confirm dependency ordering when starting (may need a minimal plugin stub).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -68,3 +71,10 @@ dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Remember: drop the
   Matches plan verbatim. Two-stage review both passed. Known minor coverage gap (carried
   from plan): no test for an import-time explosion (only the `_`-prefix skip path is
   tested) and no test for a missing plugin dir — both low-risk straightforward branches.
+- Task 9 (`b212049`): cockpit/backup.py (backup_settings zips the whole config dir with
+  ZIP_DEFLATE, posix relative paths; restore_settings extracts a zip to a target dir) +
+  tests/test_backup.py (roundtrip: settings.json value + nested plugins/extra.py survive).
+  TDD; full suite 26 passed. Matches plan verbatim. Two-stage review both passed.
+  Reviewer notes (informational, in-scope-minimal): restore merges rather than clears the
+  target dir, and no missing-zip / path-traversal hardening — revisit if a restore needs
+  clean-slate semantics or untrusted archives are ever supported.
