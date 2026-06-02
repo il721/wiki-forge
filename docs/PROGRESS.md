@@ -2,7 +2,7 @@
 
 _Updated and committed at the end of every task. This is the quick "where are we" file._
 
-## Status: IN PROGRESS — Tasks 1-10 done, next is Task 11
+## Status: IN PROGRESS — Tasks 1-11 done, next is Task 12
 
 > **Source of truth for resume = this file's "Next action" + `git log`.** Pick up there.
 
@@ -18,23 +18,22 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 8 | `plugin_host.py` (discovery + isolation) | ✅ done (`fbe53f4`) |
 | 9 | `backup.py` (settings backup/restore) | ✅ done (`b212049`) |
 | 10 | `app.py` (MainWindow shell) | ✅ done (`d154074`) |
-| 11 | Dashboard + LLM Settings plugins | ⬜ todo |
+| 11 | Dashboard + LLM Settings plugins | ✅ done (`1eb81ab`) |
 | 12 | Ingest & Compile plugin | ⬜ todo |
 | 13 | README + manual smoke checklist | ⬜ todo |
 
 ## Next action
-Begin **Task 11** (core plugins: `plugins/core/dashboard.py` + `plugins/core/llm_settings.py`):
-the Dashboard plugin (health/counts/coverage + maintenance gate) and the LLM Settings
-plugin. TDD starts with a PURE logic test `tests/test_dashboard_logic.py` for
-`run_gate_steps(steps, runner)` (runs steps in order, stops at first non-zero, log
-contains "FAILED"). NOTE: if `plugins` isn't importable as a package, create empty
-`plugins/__init__.py` and `plugins/core/__init__.py` first (plan Task 11 Step 2 note).
-The Qt plugin classes subclass `cockpit.plugin.Plugin` and mount via `ctx` (add_tab,
-add_toolbar_action, on_vault_changed, run_job, wiki_tool.run/run_sync). See plan Task 11.
-Working dir `F:\____IL_AI\wiki-forge`, branch `build/wiki-forge`. Drop the `wiki-forge/`
-path prefix (root IS the project). Once Task 11+12 add the three core plugins, tighten
-`tests/test_app_smoke.py` to assert the Dashboard/Ingest/LLM Settings tabs (plan Task 12
-Step 4).
+Begin **Task 12** (core plugin `plugins/core/ingest.py` — Ingest & Compile). TDD starts
+with a PURE logic test `tests/test_ingest_logic.py` for `build_wiki_note(body, source_rel,
+tag, today)` (returns a note string with schema-correct YAML frontmatter: tags, sources,
+source_count: 1, then the body). Then implement `IngestPlugin` (Qt: raw-source list →
+LLM compile draft → review → save to Wiki + manifest; uses `vault.raw_sources`,
+`ctx.llm`, `ctx.run_job`). FINALLY, **Task 12 Step 4 tightens `tests/test_app_smoke.py`**:
+replace `test_mainwindow_constructs` with the fuller `test_mainwindow_loads_core_plugins`
+asserting "Dashboard", "Ingest", "LLM Settings" are all tab labels (now that all three
+core plugins exist). See plan Task 12 (lines ~1589+). Working dir `F:\____IL_AI\wiki-forge`,
+branch `build/wiki-forge`. Drop the `wiki-forge/` path prefix (root IS the project).
+After Task 12 only **Task 13** remains (README + manual Ollama smoke test — needs the user).
 
 ## Environment notes
 - Python: environment default `python` / `pip` (no venv; using global site-packages).
@@ -94,3 +93,16 @@ Step 4).
   vault), not only on init — fine now, but revisit if a later plugin's `on_vault_changed`
   handler is expensive. Verified PluginHost.discover() skips the not-yet-existing
   plugins/core dir, so the shell loads cleanly standalone.
+- Task 11 (`1eb81ab`): plugins/core/dashboard.py (pure `run_gate_steps` + DashboardPlugin:
+  status/output tab, doctor/build/lint toolbar actions, off-thread maintenance gate) +
+  plugins/core/llm_settings.py (LlmSettingsPlugin: Ollama URL/model/temp form + health
+  check + save) + empty plugins/__init__.py & plugins/core/__init__.py + tests/
+  test_dashboard_logic.py (2 tests for run_gate_steps). TDD; full suite 29 passed — the
+  app smoke test stayed green (PluginHost now actually discovers & loads both plugins).
+  Matches plan verbatim. Two-stage review both passed. KNOWN FOLLOW-UP (code-quality
+  reviewer, Important but non-blocking, code is verbatim plan): LlmSettingsPlugin._check
+  calls `ctx.llm.health()` synchronously on the UI thread (up to ~5s freeze on a bad
+  network) while the very next list_models call IS off-threaded via run_job — wrap health()
+  in run_job too if it ever bites. Minor notes: `chat_model` setting is defaulted but never
+  written by _save (no form row yet); _single discards the exit code (no status flag on a
+  single failed action). All in-scope-minimal per the plan.

@@ -1401,7 +1401,7 @@ git commit -m "feat: add MainWindow shell with vault switcher, plugin host, back
 - Create: `wiki-forge/plugins/core/llm_settings.py`
 - Test: `wiki-forge/tests/test_dashboard_logic.py`
 
-- [ ] **Step 1: Write the failing logic test (gate sequencing helper)**
+- [x] **Step 1: Write the failing logic test (gate sequencing helper)**
 
 `tests/test_dashboard_logic.py`:
 ```python
@@ -1432,14 +1432,14 @@ def test_gate_runs_all_when_passing():
     assert "FAILED" not in log
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/test_dashboard_logic.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'plugins.core.dashboard'`.
 
 > If import fails on `plugins` not being a package, add empty `wiki-forge/plugins/__init__.py` and `wiki-forge/plugins/core/__init__.py`. Create them now.
 
-- [ ] **Step 3: Implement `plugins/core/dashboard.py`**
+- [x] **Step 3: Implement `plugins/core/dashboard.py`**
 
 ```python
 """Dashboard plugin: health, counts, coverage, and the maintenance gate."""
@@ -1504,7 +1504,7 @@ class DashboardPlugin(Plugin):
         )
 ```
 
-- [ ] **Step 4: Implement `plugins/core/llm_settings.py`**
+- [x] **Step 4: Implement `plugins/core/llm_settings.py`**
 
 ```python
 """LLM Settings plugin: Ollama endpoint, model selection, health check."""
@@ -1573,7 +1573,7 @@ class LlmSettingsPlugin(Plugin):
         self.ctx.log("LLM settings saved.")
 ```
 
-- [ ] **Step 5: Run logic test and commit**
+- [x] **Step 5: Run logic test and commit**
 
 Run: `pytest tests/test_dashboard_logic.py -v`
 Expected: 2 passed.
