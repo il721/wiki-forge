@@ -4,7 +4,10 @@ Pure helpers do the parsing/aggregation; scan_local_llms() is the only impure
 entry point and takes all of its I/O dependencies as injectable callables, so
 tests run with fakes (mirrors dashboard.run_gate_steps).
 """
+import os
 import re
+import shutil
+import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -142,3 +145,65 @@ def build_report(sections):
 
     section("DONE")
     return "\n".join(lines).strip() + "\n"
+
+
+def scan_local_llms(*, env=None, which=shutil.which, run=subprocess.run, home=None):
+    """Scan the machine for LLMs. Returns (report_text, model_names).
+
+    All I/O is via injected callables so tests pass fakes. No individual probe
+    failure may raise: each degrades to a 'none/unreachable' line.
+    """
+    env = os.environ if env is None else env
+    home_fn = Path.home if home is None else home
+    home_dir = Path(home_fn())
+    sections = ScanSections()
+
+    # 1. Ollama
+    if which("ollama"):
+        try:
+            proc = run(["ollama", "list"], capture_output=True, text=True, timeout=30)
+            if proc.returncode == 0:
+                sections.ollama_models = parse_ollama_list(proc.stdout or "")
+                sections.ollama_status = "ok"
+            else:
+                sections.ollama_status = "unreachable"
+        except Exception:  # noqa: BLE001 - any failure degrades gracefully
+            sections.ollama_status = "unreachable"
+
+    # 2. Other local runtimes
+    runtime_dirs = {
+        "LM Studio": home_dir / ".lmstudio" / "models",
+        "LM Studio (cache)": home_dir / ".cache" / "lm-studio" / "models",
+        "GPT4All": home_dir / ".cache" / "gpt4all",
+        "Jan": home_dir / ".jan" / "models",
+    }
+    for name, p in runtime_dirs.items():
+        try:
+            if p.is_dir():
+                sections.runtimes.append((name, [c.name for c in p.iterdir()]))
+        except OSError:
+            pass
+
+    # 3. Loose weight files under home (os.walk skips unreadable dirs and
+    #    keeps going, instead of aborting the whole traversal on the first one)
+    for dirpath, _dirnames, filenames in os.walk(home_dir, onerror=lambda _e: None):
+        for fn in filenames:
+            if fn.endswith((".gguf", ".safetensors")):
+                f = Path(dirpath) / fn
+                try:
+                    gb = round(f.stat().st_size / (1024 ** 3), 2)
+                except OSError:
+                    gb = 0.0
+                sections.weights.append((str(f), gb))
+
+    # 4. CLI tools on PATH
+    for tool in ("ollama", "claude", "llm", "aichat"):
+        path = which(tool)
+        if path:
+            sections.cli_tools.append((tool, path))
+
+    # 5. Cloud providers -> variants
+    for provider in detect_cloud_providers(env, which):
+        sections.cloud.append((provider, CLOUD_CATALOG[provider]))
+
+    return build_report(sections), collect_models(sections)

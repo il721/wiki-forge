@@ -77,3 +77,59 @@ def test_build_report_has_every_section_even_when_empty():
                    "LLM CLI TOOLS", "CLOUD PROVIDERS"]:
         assert header in text
     assert "none found" in text
+
+
+from cockpit.llm_scan import scan_local_llms
+
+
+def test_scan_local_llms_combines_all_sources(tmp_path):
+    def fake_which(c):
+        return {"ollama": "/usr/bin/ollama", "claude": "/usr/bin/claude"}.get(c)
+
+    class FakeProc:
+        returncode = 0
+        stdout = "NAME ID SIZE\nllama3.2:3b a 2GB\n"
+
+    def fake_run(args, **kwargs):
+        return FakeProc()
+
+    report, models = scan_local_llms(
+        env={"OPENAI_API_KEY": "x"},
+        which=fake_which, run=fake_run, home=lambda: tmp_path,
+    )
+    assert "llama3.2:3b" in models          # from fake ollama
+    assert "claude-opus" in models          # claude CLI -> anthropic
+    assert "gpt-4o" in models               # OPENAI_API_KEY -> openai
+    assert "=== OLLAMA" in report
+    assert "ollama ->" in report            # cli tools section
+
+
+def test_scan_local_llms_survives_ollama_failure(tmp_path):
+    def fake_run(args, **kwargs):
+        raise OSError("boom")
+
+    report, models = scan_local_llms(
+        env={}, which=lambda c: "/x" if c == "ollama" else None,
+        run=fake_run, home=lambda: tmp_path,
+    )
+    assert "unreachable" in report
+    assert models == []
+
+
+def test_scan_local_llms_finds_weight_files(tmp_path):
+    # Two .gguf files in different subdirs; both must be discovered (traversal
+    # must not stop early). A non-weight file is ignored.
+    (tmp_path / "a").mkdir()
+    (tmp_path / "b").mkdir()
+    (tmp_path / "a" / "phi-2.gguf").write_bytes(b"x")
+    (tmp_path / "b" / "mistral-7b.safetensors").write_bytes(b"y")
+    (tmp_path / "a" / "notes.txt").write_text("ignore me")
+
+    report, models = scan_local_llms(
+        env={}, which=lambda c: None, run=lambda *a, **k: None,
+        home=lambda: tmp_path,
+    )
+    assert "phi-2" in models
+    assert "mistral-7b" in models
+    assert "notes" not in models
+    assert "MODEL WEIGHT FILES" in report
