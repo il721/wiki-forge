@@ -109,7 +109,7 @@ class IngestPlugin(Plugin):
                                 "Ollama is not reachable. Check LLM Settings.")
             return
         prompt = COMPILE_PROMPT.format(source=p.read_text(encoding="utf-8"))
-        model = self.ctx.settings.get("compile_model", "llama3")
+        model = self.ctx.settings.get("compile_model", "llama3.2:3b")
         self.draft.setPlainText("Compiling…")
         self.ctx.run_job(
             lambda: self.ctx.llm.generate(prompt, model=model),

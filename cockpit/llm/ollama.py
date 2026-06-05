@@ -22,7 +22,7 @@ class OllamaProvider(LLMProvider):
         return [m["name"] for m in r.json().get("models", [])]
 
     def generate(self, prompt: str, model: str | None = None, **opts) -> str:
-        payload = {"model": model or "llama3", "prompt": prompt, "stream": False}
+        payload = {"model": model or "llama3.2:3b", "prompt": prompt, "stream": False}
         payload.update(opts)
         r = requests.post(f"{self.base_url}/api/generate", json=payload, timeout=self.timeout)
         r.raise_for_status()

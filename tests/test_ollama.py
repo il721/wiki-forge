@@ -50,3 +50,15 @@ def test_generate_returns_response_field(monkeypatch):
     assert out == "hello world"
     assert captured["json"]["model"] == "llama3"
     assert captured["json"]["stream"] is False
+
+
+def test_generate_defaults_to_installed_model(monkeypatch):
+    captured = {}
+
+    def fake_post(url, json=None, timeout=None):
+        captured["json"] = json
+        return _FakeResp(200, {"response": "x"})
+
+    monkeypatch.setattr("cockpit.llm.ollama.requests.post", fake_post)
+    OllamaProvider().generate("hi")  # no model -> falls back to the default
+    assert captured["json"]["model"] == "llama3.2:3b"
