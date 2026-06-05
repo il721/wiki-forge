@@ -63,8 +63,11 @@ class LlmSettingsPlugin(Plugin):
 
     def _fill_models(self, names):
         current = self.models.currentText()
-        self.models.clear()
-        self.models.addItems(names)
+        existing = {self.models.itemText(i) for i in range(self.models.count())}
+        for name in names:
+            if name not in existing:
+                self.models.addItem(name)
+                existing.add(name)
         self.models.setCurrentText(current)
 
     def _find_llms(self):

@@ -1,4 +1,7 @@
-from cockpit.llm_scan import parse_ollama_list
+from cockpit.llm_scan import (
+    parse_ollama_list, CLOUD_CATALOG, detect_cloud_providers, expand_cloud_models,
+    ScanSections, collect_models, build_report, scan_local_llms,
+)
 
 
 def test_parse_ollama_list_extracts_first_column():
@@ -23,11 +26,6 @@ def test_parse_ollama_list_keeps_model_named_like_header():
     assert parse_ollama_list("namelike:1b  abc  2GB\n") == ["namelike:1b"]
 
 
-from cockpit.llm_scan import (
-    CLOUD_CATALOG, detect_cloud_providers, expand_cloud_models,
-)
-
-
 def test_detect_cloud_providers_from_env_keys():
     env = {"OPENAI_API_KEY": "sk-x", "GOOGLE_API_KEY": "y"}
     assert detect_cloud_providers(env, lambda c: None) == ["openai", "google"]
@@ -48,9 +46,6 @@ def test_expand_cloud_models_flattens_in_order():
     assert expand_cloud_models(["anthropic", "openai"]) == [
         "claude-opus", "claude-sonnet", "claude-haiku", "gpt-4o", "gpt-4o-mini",
     ]
-
-
-from cockpit.llm_scan import ScanSections, collect_models, build_report
 
 
 def test_collect_models_locals_before_cloud_deduped():
@@ -77,9 +72,6 @@ def test_build_report_has_every_section_even_when_empty():
                    "LLM CLI TOOLS", "CLOUD PROVIDERS"]:
         assert header in text
     assert "none found" in text
-
-
-from cockpit.llm_scan import scan_local_llms
 
 
 def test_scan_local_llms_combines_all_sources(tmp_path):
@@ -133,6 +125,42 @@ def test_scan_local_llms_finds_weight_files(tmp_path):
     assert "mistral-7b" in models
     assert "notes" not in models
     assert "MODEL WEIGHT FILES" in report
+
+
+def test_check_refresh_models_is_additive(qtbot):
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    class FakeLlm:
+        base_url = "http://localhost:11434"
+
+    class FakeCtx:
+        def __init__(self):
+            self.settings = {}
+            self.llm = FakeLlm()
+            self.logs = []
+            self.tab = None
+        def run_job(self, fn, on_done=None, on_error=None):
+            pass
+        def add_tab(self, w):
+            self.tab = w
+        def log(self, m):
+            self.logs.append(m)
+
+    plugin = LlmSettingsPlugin()
+    ctx = FakeCtx()
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    # A scan added a cloud model; a later Ollama refresh must NOT wipe it.
+    plugin._show_scan(("REPORT", ["claude-opus"]))
+    plugin._fill_models(["llama3.2:3b", "qwen2.5:7b"])
+
+    items = [plugin.models.itemText(i) for i in range(plugin.models.count())]
+    assert "claude-opus" in items          # survived the refresh
+    assert "llama3.2:3b" in items
+    assert "qwen2.5:7b" in items
+    # no duplicates
+    assert len(items) == len(set(items))
 
 
 def test_find_llm_relabels_and_merges_dropdown(qtbot):
