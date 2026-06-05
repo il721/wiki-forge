@@ -14,7 +14,7 @@ _Generated 2026-06-05 based on detected hardware._
 ## Recommended — full GPU fit (fast)
 | Model | Ollama pull | ~VRAM (Q4) | Good for |
 |---|---|---|---|
-| Llama 3.2 3B | `ollama pull llama3.2:3b` | ~2.0 GB | Best all-round small model; Wiki-Forge ingest/compile |
+| Llama 3.2 3B | `ollama pull llama3.2:3b` | ~2.0 GB | Best all-round small model; Wiki-Forge default |
 | Qwen2.5 3B | `ollama pull qwen2.5:3b` | ~2.0 GB | Strong reasoning + summarization for its size |
 | Phi-3.5-mini (3.8B) | `ollama pull phi3.5` | ~2.3 GB | Structured / instruction tasks |
 | Gemma 2 2B | `ollama pull gemma2:2b` | ~1.6 GB | Fastest, lightest; quick drafting |
