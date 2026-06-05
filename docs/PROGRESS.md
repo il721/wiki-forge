@@ -137,3 +137,13 @@ branch `build/wiki-forge` is feature-complete → use
   Rationale: sources are now added to the wiki directly inside Obsidian, so the in-cockpit
   ingest/compile workspace was unneeded. `Vault.raw_sources` kept (general vault property).
   Full suite 33 passed.
+- Post-build enhancement — Find LLM feature (spec `docs/superpowers/specs/2026-06-05-find-llm-design.md`,
+  plan `docs/superpowers/plans/2026-06-05-find-llm.md`): new `cockpit/llm_scan.py` does a
+  full local-machine scan — Ollama models, other local runtimes (LM Studio, GPT4All, Jan),
+  loose `.gguf`/`.safetensors` weight files, LLM CLI tools on PATH, and cloud provider
+  variants detected from API-key env vars or the `claude` CLI. The LLM Settings tab gains
+  a "Find LLM" button (runs scan off-thread via `ctx.run_job`), a plain-text report area,
+  and the model row is relabeled "Working LLM"; scan results merge additively into the
+  dropdown. Tested in `tests/test_llm_scan.py` (15 tests). Full suite 48 passed. Known
+  intentional caveat: cloud/non-Ollama models can be listed and selected but the compile
+  pipeline remains Ollama-only, so they are not yet runnable end-to-end.
