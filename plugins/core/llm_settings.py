@@ -1,9 +1,11 @@
-"""LLM Settings plugin: Ollama endpoint, model selection, health check."""
+"""LLM Settings plugin: Ollama endpoint, model selection, health check, scan."""
 from PySide6.QtWidgets import (
-    QWidget, QFormLayout, QLineEdit, QComboBox, QPushButton, QLabel, QDoubleSpinBox,
+    QWidget, QFormLayout, QLineEdit, QComboBox, QPushButton, QLabel,
+    QDoubleSpinBox, QPlainTextEdit,
 )
 
 from cockpit.plugin import Plugin
+from cockpit.llm_scan import scan_local_llms
 
 
 class LlmSettingsPlugin(Plugin):
@@ -25,7 +27,7 @@ class LlmSettingsPlugin(Plugin):
         self.models = QComboBox()
         self.models.setEditable(True)
         self.models.setCurrentText(s["compile_model"])
-        form.addRow("Compile model", self.models)
+        form.addRow("Working LLM", self.models)
 
         self.temp = QDoubleSpinBox()
         self.temp.setRange(0.0, 2.0)
@@ -37,6 +39,14 @@ class LlmSettingsPlugin(Plugin):
         check = QPushButton("Check / refresh models")
         check.clicked.connect(self._check)
         form.addRow(check, self.health)
+
+        self.scan_status = QLabel("")
+        find = QPushButton("Find LLM")
+        find.clicked.connect(self._find_llms)
+        form.addRow(find, self.scan_status)
+
+        self.report = QPlainTextEdit(readOnly=True)
+        form.addRow(self.report)
 
         save = QPushButton("Save")
         save.clicked.connect(self._save)
@@ -56,6 +66,28 @@ class LlmSettingsPlugin(Plugin):
         self.models.clear()
         self.models.addItems(names)
         self.models.setCurrentText(current)
+
+    def _find_llms(self):
+        self.scan_status.setText("Scanning…")
+        self.ctx.run_job(
+            scan_local_llms, on_done=self._show_scan, on_error=self._scan_failed,
+        )
+
+    def _show_scan(self, result):
+        report, models = result
+        self.report.setPlainText(report)
+        current = self.models.currentText()
+        existing = {self.models.itemText(i) for i in range(self.models.count())}
+        for m in models:
+            if m not in existing:
+                self.models.addItem(m)
+                existing.add(m)
+        self.models.setCurrentText(current)
+        self.scan_status.setText(f"Found {len(models)} model(s).")
+
+    def _scan_failed(self, msg):
+        self.scan_status.setText(f"Scan failed: {msg}")
+        self.ctx.log(f"Find LLM scan failed: {msg}")
 
     def _save(self):
         self.ctx.llm.base_url = self.url.text().rstrip("/")

@@ -133,3 +133,42 @@ def test_scan_local_llms_finds_weight_files(tmp_path):
     assert "mistral-7b" in models
     assert "notes" not in models
     assert "MODEL WEIGHT FILES" in report
+
+
+def test_find_llm_relabels_and_merges_dropdown(qtbot):
+    from PySide6.QtWidgets import QLabel
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    class FakeLlm:
+        base_url = "http://localhost:11434"
+
+    class FakeCtx:
+        def __init__(self):
+            self.settings = {}
+            self.llm = FakeLlm()
+            self.logs = []
+            self.tab = None
+        def run_job(self, fn, on_done=None, on_error=None):
+            pass
+        def add_tab(self, w):
+            self.tab = w
+        def log(self, m):
+            self.logs.append(m)
+
+    plugin = LlmSettingsPlugin()
+    ctx = FakeCtx()
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    # Relabel: row reads "Working LLM", not "Compile model".
+    label_texts = [lab.text() for lab in ctx.tab.findChildren(QLabel)]
+    assert "Working LLM" in label_texts
+    assert "Compile model" not in label_texts
+
+    # Merge: scan results land in the combo + report, selection preserved.
+    plugin._show_scan(("REPORT BODY", ["llama3.2:3b", "claude-opus"]))
+    items = [plugin.models.itemText(i) for i in range(plugin.models.count())]
+    assert "llama3.2:3b" in items
+    assert "claude-opus" in items
+    assert plugin.report.toPlainText() == "REPORT BODY"
+    assert plugin.models.currentText() == "llama3.2:3b"
