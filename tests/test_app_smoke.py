@@ -8,5 +8,5 @@ def test_mainwindow_loads_core_plugins(qtbot, tmp_path, monkeypatch):
     qtbot.addWidget(win)
     labels = [win.tabs.tabText(i) for i in range(win.tabs.count())]
     assert "Dashboard" in labels
-    assert "Ingest" in labels
     assert "LLM Settings" in labels
+    assert "Ingest" not in labels

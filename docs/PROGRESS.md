@@ -19,14 +19,14 @@ _Updated and committed at the end of every task. This is the quick "where are we
 | 9 | `backup.py` (settings backup/restore) | ✅ done (`b212049`) |
 | 10 | `app.py` (MainWindow shell) | ✅ done (`d154074`) |
 | 11 | Dashboard + LLM Settings plugins | ✅ done (`1eb81ab`) |
-| 12 | Ingest & Compile plugin | ✅ done (`cd9f5eb` + fix `6050b1d`) |
+| 12 | ~~Ingest & Compile plugin~~ | ❌ removed (feature dropped — sources added in Obsidian) |
 | 13 | README + manual smoke checklist | ✅ README done (`2f8053d`); ⬜ manual smoke = user |
 
 ## Next action
 All 13 tasks are BUILT. The only thing left in the plan is **Task 13 Step 2 — the manual
 smoke checklist — which is a USER action** (needs a running app, a real LLM Wiki vault,
 and a live Ollama): launch `wiki-forge`, add a vault, run the maintenance gate,
-check/refresh models, compile+save a note, backup/restore. The checklist lives in
+check/refresh models, backup/restore. The checklist lives in
 `README.md` (and plan Task 13 Step 2). Once the user has run it and is satisfied, the
 branch `build/wiki-forge` is feature-complete → use
 **superpowers:finishing-a-development-branch** to decide merge vs PR vs cleanup
@@ -132,3 +132,8 @@ branch `build/wiki-forge` is feature-complete → use
   one-line wiring in app.py, no structural change. tests/test_theme.py (3 tests). Full suite
   33 passed. Adapted DESIGN.md font sizes down for the dense cockpit; icons deferred. Spec:
   docs/superpowers/specs/2026-06-02-wiki-forge-dark-theme-design.md.
+- Post-build removal — Ingest & Compile plugin dropped: deleted plugins/core/ingest.py and
+  tests/test_ingest_logic.py, and updated tests/test_app_smoke.py to assert the tab is gone.
+  Rationale: sources are now added to the wiki directly inside Obsidian, so the in-cockpit
+  ingest/compile workspace was unneeded. `Vault.raw_sources` kept (general vault property).
+  Full suite 33 passed.

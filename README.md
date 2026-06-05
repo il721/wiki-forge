@@ -1,10 +1,10 @@
 # Wiki-Forge
 
 Desktop cockpit for managing Obsidian-based **LLM Wiki** vaults. It complements Obsidian
-(your editor) with: a control panel over each vault's `scripts/wiki_tool.py`, an
-LLM-assisted ingest/compile workspace (via local [Ollama](https://ollama.com)),
-multi-vault switching, settings backup/restore, and a small **plugin system** where every
-feature is a plugin built on one `PluginContext` API.
+(your editor) with: a control panel over each vault's `scripts/wiki_tool.py`, local
+[Ollama](https://ollama.com) integration, multi-vault switching, settings backup/restore,
+and a small **plugin system** where every feature is a plugin built on one
+`PluginContext` API.
 
 Built with **PySide6** (Qt for Python).
 
@@ -25,7 +25,7 @@ wiki-forge          # console script, or:
 python -m cockpit.app
 ```
 
-The compile features need [Ollama](https://ollama.com) running locally (default
+The LLM features need [Ollama](https://ollama.com) running locally (default
 `http://localhost:11434`). Everything else — vault switching, the maintenance gate,
 backup/restore — works without it.
 
@@ -36,11 +36,8 @@ backup/restore — works without it.
 - **Dashboard + maintenance gate.** Run `doctor` / `build` / `lint` against the active
   vault, or run the full gate (`doctor → build → lint → source-lint`) which stops at the
   first failure.
-- **Ingest & Compile.** Pick a raw source, compile it into a draft Wiki note with the
-  local LLM, review the draft, then save it under `Wiki/` with schema-correct frontmatter
-  and refresh the source manifest.
 - **LLM Settings.** Point at an Ollama endpoint, check reachability, refresh the model
-  list, and pick the compile model and temperature.
+  list, and pick the model and temperature.
 - **Settings backup/restore.** Zip the whole config directory and restore it from the
   File menu.
 
@@ -67,8 +64,8 @@ vault is needed to run it.
 - The **app shell** (`cockpit/app.py`) wires the services together, hosts the plugin tabs,
   and persists per-plugin settings (namespaced under `plugins.<id>` in `settings.json`).
 
-The three built-in features — Dashboard, Ingest, LLM Settings — are themselves plugins
-under `plugins/core/`, using the same public API any third-party plugin would.
+The built-in features — Dashboard and LLM Settings — are themselves plugins under
+`plugins/core/`, using the same public API any third-party plugin would.
 
 ### Writing a plugin
 
@@ -90,13 +87,11 @@ class HelloPlugin(Plugin):
 
 Run once against a real LLM Wiki vault with Ollama running:
 
-- [ ] Launch `wiki-forge`; the window opens with Dashboard / Ingest / LLM Settings tabs.
+- [ ] Launch `wiki-forge`; the window opens with Dashboard / LLM Settings tabs.
 - [ ] **+ Add vault** → pick an existing LLM Wiki folder; it appears in the dropdown.
 - [ ] Dashboard shows the active vault; **Run maintenance gate** streams
       doctor/build/lint/source-lint output and stops on any failure.
 - [ ] LLM Settings → **Check / refresh models** shows "Reachable" and lists Ollama models.
-- [ ] Ingest → select a Raw source → **Compile with LLM** → a draft appears → **Save**
-      writes a note under `Wiki/` and refreshes the manifest.
 - [ ] File → **Backup settings** writes a zip; **Restore settings** reads it back.
 
 ## Documentation

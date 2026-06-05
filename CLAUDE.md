@@ -2,9 +2,9 @@
 
 Wiki-Forge is a **PySide6 desktop cockpit** for managing Obsidian-based **LLM Wiki**
 vaults. It complements Obsidian (the user's editor) with: a control panel over each
-vault's `scripts/wiki_tool.py`, an LLM-assisted ingest/compile workspace (via local
-**Ollama**), multi-vault switching, settings backup, and a small **plugin system**
-(every feature is a plugin using one `PluginContext` API).
+vault's `scripts/wiki_tool.py`, local **Ollama** integration, multi-vault switching,
+settings backup, and a small **plugin system** (every feature is a plugin using one
+`PluginContext` API).
 
 ## Source of truth
 - **Spec (why/what):** `docs/superpowers/specs/2026-05-29-wiki-forge-design.md`
