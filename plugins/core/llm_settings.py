@@ -12,8 +12,8 @@ class LlmSettingsPlugin(Plugin):
     def activate(self, ctx):
         self.ctx = ctx
         s = ctx.settings
-        s.setdefault("compile_model", "llama3")
-        s.setdefault("chat_model", "llama3")
+        s.setdefault("compile_model", "llama3.2:3b")
+        s.setdefault("chat_model", "llama3.2:3b")
         s.setdefault("temperature", 0.2)
 
         w = QWidget()
