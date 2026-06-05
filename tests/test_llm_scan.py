@@ -48,3 +48,32 @@ def test_expand_cloud_models_flattens_in_order():
     assert expand_cloud_models(["anthropic", "openai"]) == [
         "claude-opus", "claude-sonnet", "claude-haiku", "gpt-4o", "gpt-4o-mini",
     ]
+
+
+from cockpit.llm_scan import ScanSections, collect_models, build_report
+
+
+def test_collect_models_locals_before_cloud_deduped():
+    s = ScanSections(
+        ollama_models=["llama3.2:3b", "qwen2.5:7b"],
+        runtimes=[("LM Studio", ["mistral-7b"])],
+        weights=[("C:/x/phi-2.gguf", 1.6)],
+        cloud=[("anthropic", ["claude-opus"]), ("openai", ["gpt-4o"])],
+    )
+    assert collect_models(s) == [
+        "llama3.2:3b", "qwen2.5:7b", "mistral-7b", "phi-2",
+        "claude-opus", "gpt-4o",
+    ]
+
+
+def test_collect_models_drops_repeats():
+    s = ScanSections(ollama_models=["a", "a"], cloud=[("openai", ["a", "gpt-4o"])])
+    assert collect_models(s) == ["a", "gpt-4o"]
+
+
+def test_build_report_has_every_section_even_when_empty():
+    text = build_report(ScanSections())
+    for header in ["OLLAMA", "OTHER LOCAL RUNTIMES", "MODEL WEIGHT FILES",
+                   "LLM CLI TOOLS", "CLOUD PROVIDERS"]:
+        assert header in text
+    assert "none found" in text
