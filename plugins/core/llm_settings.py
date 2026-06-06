@@ -1,7 +1,7 @@
 """LLM Settings plugin: Ollama endpoint, model selection, health check, scan."""
 from PySide6.QtWidgets import (
     QWidget, QFormLayout, QLineEdit, QComboBox, QPushButton, QLabel,
-    QDoubleSpinBox, QPlainTextEdit,
+    QDoubleSpinBox, QListWidget,
 )
 
 from cockpit.plugin import Plugin
@@ -45,14 +45,44 @@ class LlmSettingsPlugin(Plugin):
         find.clicked.connect(self._find_llms)
         form.addRow(find, self.scan_status)
 
-        self.report = QPlainTextEdit(readOnly=True)
-        form.addRow(self.report)
+        # Clicking a found model makes it the Working LLM.
+        self.found_list = QListWidget()
+        self.found_list.itemClicked.connect(
+            lambda item: self.models.setCurrentText(item.text()))
+        form.addRow(self.found_list)
 
         save = QPushButton("Save")
         save.clicked.connect(self._save)
         form.addRow(save)
 
+        # Models from the last *saved* Find LLM scan; restored on launch.
+        # `_scanned_models` stays None until a new scan runs this session, so a
+        # plain Save never overwrites the stored list without a fresh scan.
+        self._scanned_models = None
+        saved = s.get("found_models", [])
+        if saved:
+            self._set_found(saved)
+            self._merge_models(saved)
+
+        # Make the saved working model the program-wide default for LLM calls.
+        ctx.llm.model = s["compile_model"]
+
         ctx.add_tab(w)
+
+    def _set_found(self, names):
+        """Show the discovered model names as clickable rows."""
+        self.found_list.clear()
+        self.found_list.addItems(names)
+
+    def _merge_models(self, names):
+        """Add any new names to the dropdown, preserving the current selection."""
+        current = self.models.currentText()
+        existing = {self.models.itemText(i) for i in range(self.models.count())}
+        for name in names:
+            if name not in existing:
+                self.models.addItem(name)
+                existing.add(name)
+        self.models.setCurrentText(current)
 
     def _check(self):
         self.ctx.llm.base_url = self.url.text().rstrip("/")
@@ -62,13 +92,7 @@ class LlmSettingsPlugin(Plugin):
             self.ctx.run_job(self.ctx.llm.list_models, on_done=self._fill_models)
 
     def _fill_models(self, names):
-        current = self.models.currentText()
-        existing = {self.models.itemText(i) for i in range(self.models.count())}
-        for name in names:
-            if name not in existing:
-                self.models.addItem(name)
-                existing.add(name)
-        self.models.setCurrentText(current)
+        self._merge_models(names)
 
     def _find_llms(self):
         self.scan_status.setText("Scanning…")
@@ -78,14 +102,12 @@ class LlmSettingsPlugin(Plugin):
 
     def _show_scan(self, result):
         report, models = result
-        self.report.setPlainText(report)
-        current = self.models.currentText()
-        existing = {self.models.itemText(i) for i in range(self.models.count())}
-        for m in models:
-            if m not in existing:
-                self.models.addItem(m)
-                existing.add(m)
-        self.models.setCurrentText(current)
+        # Raw scan report goes to the Log window; the box lists found model
+        # names only, one per line.
+        self.ctx.log(report)
+        self._set_found(models)
+        self._merge_models(models)
+        self._scanned_models = models  # marks a fresh scan to persist on Save
         self.scan_status.setText(f"Found {len(models)} model(s).")
 
     def _scan_failed(self, msg):
@@ -96,4 +118,9 @@ class LlmSettingsPlugin(Plugin):
         self.ctx.llm.base_url = self.url.text().rstrip("/")
         self.ctx.settings["compile_model"] = self.models.currentText()
         self.ctx.settings["temperature"] = self.temp.value()
+        # Apply the chosen model as the default for subsequent LLM actions.
+        self.ctx.llm.model = self.models.currentText()
+        # Persist found models only when a fresh scan ran this session.
+        if self._scanned_models is not None:
+            self.ctx.settings["found_models"] = self._scanned_models
         self.ctx.log("LLM settings saved.")

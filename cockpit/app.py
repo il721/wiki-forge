@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Wiki-Forge")
         self.setWindowIcon(app_icon())
-        self.resize(1000, 700)
+        self.resize(1400, 760)
         self.dashboard_cards = []
 
         cfg = config_dir()
@@ -77,6 +77,10 @@ class MainWindow(QMainWindow):
         self.host.load_all()
         self._refresh_vault_combo()
 
+        # Split the central tabs and the right-hand Log panel ~50/50.
+        half = self.width() // 2
+        self.resizeDocks([self.log_dock], [half], Qt.Horizontal)
+
     # --- UI construction ---------------------------------------------------
     def _build_ui(self):
         central = QWidget()
@@ -100,9 +104,16 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         self.log_view = QPlainTextEdit(readOnly=True)
-        dock = QDockWidget("Log", self)
-        dock.setWidget(self.log_view)
-        self.addDockWidget(Qt.BottomDockWidgetArea, dock)
+        # Inset the panel from the window's right/bottom edges, like other elements.
+        log_container = QWidget()
+        log_layout = QVBoxLayout(log_container)
+        log_layout.setContentsMargins(0, 0, 9, 9)
+        log_layout.addWidget(self.log_view)
+        self.log_dock = QDockWidget("Log", self)
+        self.log_dock.setWidget(log_container)
+        # Merge the title bar and text area into one nameless panel.
+        self.log_dock.setTitleBarWidget(QWidget())
+        self.addDockWidget(Qt.RightDockWidgetArea, self.log_dock)
 
     def _build_menu(self):
         file_menu = self.menuBar().addMenu("File")

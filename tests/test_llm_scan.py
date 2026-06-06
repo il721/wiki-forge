@@ -198,5 +198,101 @@ def test_find_llm_relabels_and_merges_dropdown(qtbot):
     items = [plugin.models.itemText(i) for i in range(plugin.models.count())]
     assert "llama3.2:3b" in items
     assert "claude-opus" in items
-    assert plugin.report.toPlainText() == "REPORT BODY"
+    # The found-models list holds only the model names, one per row...
+    found = [plugin.found_list.item(i).text()
+             for i in range(plugin.found_list.count())]
+    assert found == ["llama3.2:3b", "claude-opus"]
+    # ...while the raw scan report goes to the Log window.
+    assert "REPORT BODY" in ctx.logs
     assert plugin.models.currentText() == "llama3.2:3b"
+
+
+class _PersistCtx:
+    """Minimal ctx whose `settings` dict survives across activations."""
+
+    def __init__(self, settings):
+        class FakeLlm:
+            base_url = "http://localhost:11434"
+        self.settings = settings
+        self.llm = FakeLlm()
+        self.logs = []
+        self.tab = None
+
+    def run_job(self, fn, on_done=None, on_error=None):
+        pass
+
+    def add_tab(self, w):
+        self.tab = w
+
+    def log(self, m):
+        self.logs.append(m)
+
+
+def test_found_models_loaded_on_activate(qtbot):
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    plugin = LlmSettingsPlugin()
+    ctx = _PersistCtx({"found_models": ["qwen2.5:7b", "claude-opus"]})
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    # The saved names repopulate the list and the dropdown on load.
+    found = [plugin.found_list.item(i).text()
+             for i in range(plugin.found_list.count())]
+    assert found == ["qwen2.5:7b", "claude-opus"]
+    items = [plugin.models.itemText(i) for i in range(plugin.models.count())]
+    assert "qwen2.5:7b" in items
+    assert "claude-opus" in items
+
+
+def test_clicking_found_model_selects_working_llm(qtbot):
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    plugin = LlmSettingsPlugin()
+    ctx = _PersistCtx({})
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    plugin._show_scan(("RAW", ["llama3.2:3b", "claude-opus"]))
+
+    # Clicking a model fills the Working LLM field...
+    item = plugin.found_list.item(1)
+    plugin.found_list.itemClicked.emit(item)
+    assert plugin.models.currentText() == "claude-opus"
+
+    # ...and Save remembers it as the working model, applying it as the
+    # provider default for subsequent actions in the program.
+    plugin._save()
+    assert ctx.settings["compile_model"] == "claude-opus"
+    assert ctx.llm.model == "claude-opus"
+
+
+def test_saved_working_model_applied_on_load(qtbot):
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    plugin = LlmSettingsPlugin()
+    ctx = _PersistCtx({"compile_model": "qwen2.5:7b"})
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    # The saved working model loads into the field and becomes the default.
+    assert plugin.models.currentText() == "qwen2.5:7b"
+    assert ctx.llm.model == "qwen2.5:7b"
+
+
+def test_save_persists_found_models_only_after_scan(qtbot):
+    from plugins.core.llm_settings import LlmSettingsPlugin
+
+    plugin = LlmSettingsPlugin()
+    ctx = _PersistCtx({"found_models": ["old-model"]})
+    plugin.activate(ctx)
+    qtbot.addWidget(ctx.tab)
+
+    # Save with no new scan: the stored list must stay unchanged.
+    plugin._save()
+    assert ctx.settings["found_models"] == ["old-model"]
+
+    # A fresh scan + Save: the stored list updates to the new findings.
+    plugin._show_scan(("RAW", ["llama3.2:3b", "claude-haiku"]))
+    plugin._save()
+    assert ctx.settings["found_models"] == ["llama3.2:3b", "claude-haiku"]

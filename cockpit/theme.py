@@ -42,8 +42,7 @@ QLabel {{
 
 /* --- Tabs --------------------------------------------------------------- */
 QTabWidget::pane {{
-    border: 2px solid {_BORDER};
-    border-radius: 15px;
+    border: none;
     top: -1px;
     background-color: {_SURFACE};
 }}
