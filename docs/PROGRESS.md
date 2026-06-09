@@ -147,3 +147,11 @@ branch `build/wiki-forge` is feature-complete → use
   dropdown. Tested in `tests/test_llm_scan.py` (15 tests). Full suite 48 passed. Known
   intentional caveat: cloud/non-Ollama models can be listed and selected but the compile
   pipeline remains Ollama-only, so they are not yet runnable end-to-end.
+- Post-build enhancement — Ollama `num_gpu` pass-through (on `feat/find-llm`):
+  `OllamaProvider.generate` now nests runtime params under Ollama's `options` key and
+  auto-applies `num_gpu=99` for `qwen3.5`/`qwen3_5` models (a caller-supplied `num_gpu`
+  always wins). Rationale: Ollama 0.30.7 over-estimates the qwen3_5 arch's VRAM and
+  silently offloads it to the CPU (~7 tok/s on the P2000); forcing all layers onto the GPU
+  loads it at ~3GB / 100% GPU / ~20-25 tok/s. Verified live against the running Ollama with
+  `hf.co/unsloth/Qwen3.5-4B-GGUF:Q4_K_M`. TDD; 5 new tests in `tests/test_ollama.py`; full
+  suite 58 passed.
